@@ -1,0 +1,62 @@
+agents:
+  - name: WebsiteFetcherAgent
+    module: agents.website_fetcher
+    class_or_function: fetch_website_content
+
+  - name: KeywordExtractorAgent
+    module: agents.keyword_extractor
+    class_or_function: extract_keywords_and_industry
+
+  - name: PaperFetcherAgent
+    module: agents.paper_fetcher
+    class_or_function: fetch_papers
+
+  - name: SummarizerAgent
+    module: agents.summarizer
+    class_or_function: summarize_everything
+
+tasks:
+  - name: FetchWebsiteTask
+    agent: WebsiteFetcherAgent
+    input: company_website
+    output: website_content
+
+  - name: ExtractKeywordsTask
+    agent: KeywordExtractorAgent
+    input:
+      company_name: company_name
+      website_content: website_content
+    output: keywords_and_industry
+
+  - name: FetchPapersTask
+    agent: PaperFetcherAgent
+    input: keywords_and_industry
+    output: research
+
+  - name: SummarizeTask
+    agent: SummarizerAgent
+    input:
+      website_content: website_content
+      keywords_and_industry: keywords_and_industry
+      research: research
+    output: executive_digest
+
+workflow:
+  - task: FetchWebsiteTask
+  - task: ExtractKeywordsTask
+  - task: FetchPapersTask
+  - task: SummarizeTask
+
+sources:
+  - name: arxiv
+    type: scrape
+    url: "https://arxiv.org/search/?query={query}&searchtype=all"
+  - name: semantic_scholar
+    type: scrape
+    url: "https://www.semanticscholar.org/search?q={query}&sort=recency"
+  - name: acm
+    type: scrape
+    url: "https://dl.acm.org/action/doSearch?AllField={query}&AfterYear={year}"
+  - name: google_scholar
+    type: scrape
+    url: "https://scholar.google.com/scholar?q={query}&as_ylo={year}"

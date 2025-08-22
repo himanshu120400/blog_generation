@@ -1,0 +1,10 @@
+openai
+reportlab
+requests
+beautifulsoup4
+pyyaml
+python-dotenv
+feedparser
+selenium beautifulsoup4 webdriver-manager
+matplotlib
+markdown
